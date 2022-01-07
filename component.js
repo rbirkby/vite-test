@@ -1,6 +1,8 @@
 class helloWorld extends HTMLElement {
-    connectedCallback() {
-        const text = document.createTextNode("Hello World3");
+    async connectedCallback() {
+        const response = await fetch('/api/message'); 
+        const message = (await response.json()).message;
+        const text = document.createTextNode(message);
         this.appendChild(text);
     }
 }
