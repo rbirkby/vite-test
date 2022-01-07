@@ -5,6 +5,14 @@ import {build} from 'vite';
 import { createServer as createViteServer } from 'vite';
 
 async function createServer() {
+  const config = {
+    build: {
+      target: 'esnext',
+      minify: false,
+      souercemap: true,
+      polyfillModulePreload: false
+    }
+  };
   const app = express();
 
   app.get('/api/message', async (req, res) => {
@@ -19,12 +27,13 @@ async function createServer() {
     // In middleware mode, if you want to use Vite's own HTML serving logic
     // use `'html'` as the `middlewareMode` (ref https://vitejs.dev/config/#server-middlewaremode)
     const vite = await createViteServer({
+      ...config,
       server: { middlewareMode: 'html' }
     });
     // use vite's connect instance as middleware
     app.use(vite.middlewares);
   } else {
-    await build();
+    await build(config);
     app.use('/', express.static('dist'));
   }
 
